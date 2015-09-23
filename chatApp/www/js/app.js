@@ -1,5 +1,4 @@
 // Ionic Starter App
-
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
@@ -17,3 +16,45 @@ angular.module('starter', ['ionic'])
     }
   });
 })
+
+
+.config(function($stateProvider, $urlRouterProvider){
+  $stateProvider
+    .state('login', {
+      url: '/login',
+      templateUrl: 'lib/templates/login.html'
+    })
+
+    .state('chat', {
+      url: '/chat',
+      templateUrl: 'lib/templates/chat.html'
+    });
+
+    $urlRouterProvider.otherwise('/login');
+})
+
+//|||||||||||||||||||||||||||||||||||||||||||||||
+//||||| LOGIN CONTROLLER|||||||||||||||||||||||||
+//|||||||||||||||||||||||||||||||||||||||||||||||
+.controller('LoginController', function($scope, $state){
+  //join method to take the 'nicknae'
+  $scope.join = function(nickname){
+    if(nickname)
+   {
+    $state.go('chat');
+  }
+ } 
+
+})
+
+//||||||||||||||||||||||||||||||||||||||||||||||
+//||||| CHAT CONTROLLER|||||||||||||||||||||||||
+//||||||||||||||||||||||||||||||||||||||||||||||
+.controller('ChatController', function($scope){
+
+
+})
+
+
+
+
