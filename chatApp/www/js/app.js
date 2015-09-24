@@ -26,7 +26,8 @@ angular.module('starter', ['ionic'])
     })
 
     .state('chat', {
-      url: '/chat',
+      //3. tell state to pass nickname param
+      url: '/chat:nickname',
       templateUrl: 'lib/templates/chat.html'
     });
 
@@ -40,17 +41,21 @@ angular.module('starter', ['ionic'])
   //join method to take the 'nicknae'
   $scope.join = function(nickname){
     if(nickname)
-   {
-    $state.go('chat');
+   {               
+                //state parameters
+                   //1. from chat.html {{nickname}} JSON object
+    $state.go('chat', {nickname: nickname});
+                  //object name:value
   }
  } 
-
 })
-
 //||||||||||||||||||||||||||||||||||||||||||||||
 //||||| CHAT CONTROLLER|||||||||||||||||||||||||
-//||||||||||||||||||||||||||||||||||||||||||||||
-.controller('ChatController', function($scope){
+//||||||||||||||||||||||||||||||||||||||||||4. inject stateParams
+.controller('ChatController', function($scope, $stateParams){
+  //2.passed from our loginController
+  //scope variable obj name and value 
+  $scope.nickname = $stateParams.nickname;
 
 
 })
