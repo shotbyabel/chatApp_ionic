@@ -33,21 +33,18 @@ angular.module('starter', ['ionic','btford.socket-io'])
 
     $urlRouterProvider.otherwise('/login');
 })
-
 //|||||||||||||||||||||||||||||||||||
 //|||||| SOCKET iO FACTORY  /service| 
 //|||||||||||||||||||||||||||||||||||
+.factory('Socket', function (socketFactory) {
+  var myIoSocket = io.connect('http://localhost:3000');
 
-.factory('mySocket', function (socketFactory) {
-  var myIoSocket = io.connect('//');
-
-  mySocket = socketFactory({
+  Socket = socketFactory({
     ioSocket: myIoSocket
   });
 
-  return mySocket;
+  return Socket;
 })
-
 //|||||||||||||||||||||||||||||||||||||||||||||||
 //||||| LOGIN CONTROLLER|||||||||||||||||||||||||
 //|||||||||||||||||||||||||||||||||||||||||||||||
@@ -65,12 +62,22 @@ angular.module('starter', ['ionic','btford.socket-io'])
 })
 //||||||||||||||||||||||||||||||||||||||||||||||
 //||||| CHAT CONTROLLER|||||||||||||||||||||||||
-//||||||||||||||||||||||||||||||||||||||||||4. inject stateParams
-.controller('ChatController', function($scope, $stateParams){
+//|||||||||||||||||||||||||||||||||||||4. inject stateParams// inject mySocket dependency
+.controller('ChatController', function($scope, $stateParams, Socket){
+  //b. data to send
+  var data = {message: "Hello, Server!"};
+  Socket.on("connect", function() {
+      //a. send events to server
+      Socket.emit("Message", data);
+  })
+    //f. tell socket clien to listen for server!
+    Socket.on("Message", function(data){
+      alert(data.message)
+    })
+
   //2.passed from our loginController
   //scope variable obj name and value 
   $scope.nickname = $stateParams.nickname;
-
 
 })
 
