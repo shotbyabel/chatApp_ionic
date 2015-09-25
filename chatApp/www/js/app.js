@@ -64,20 +64,25 @@ angular.module('starter', ['ionic','btford.socket-io'])
 //||||| CHAT CONTROLLER|||||||||||||||||||||||||
 //|||||||||||||||||||||||||||||||||||||4. inject stateParams// inject mySocket dependency
 .controller('ChatController', function($scope, $stateParams, Socket){
-  //b. data to send
-  var data = {message: "Hello, Server!"};
+  $scope.messages = [];
+  $scope.nickname = $stateParams.nickname;  
+  //b. data to sender             //ad key: and we can juse scope.nickname 
+      //we are sending JSON obj data w/2 keys (who send it and what the msg is! )
+  var data = {message: "User has joined", sender: $scope.nickname};
   Socket.on("connect", function() {
       //a. send events to server
       Socket.emit("Message", data);
   })
     //f. tell socket clien to listen for server!
     Socket.on("Message", function(data){
-      alert(data.message)
+      //
+      $scope.messages.push(data);
+      // console.log(data.message);
     })
 
   //2.passed from our loginController
   //scope variable obj name and value 
-  $scope.nickname = $stateParams.nickname;
+  // $scope.nickname = $stateParams.nickname;
 
 })
 

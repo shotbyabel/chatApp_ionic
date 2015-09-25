@@ -20,9 +20,10 @@ var express = require('express'),
         console.log(data.message);
 
         //e. server replies   //pass JSON obj key: value
-        socket.emit("Message", {message: "Hello Client"})
-        
-      })
+        //socket.emit (one to one)
+        io.emit("Message", data)
+        //io.emit sends a msg to ALL the users
+      });
 
     })
 
