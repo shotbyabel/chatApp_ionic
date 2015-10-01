@@ -57,7 +57,7 @@
   max-width: 100%;
   min-height: 50px;
   padding: 5px;
-  background: #FF7F50;
+  background: #D4DDDE;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
@@ -71,7 +71,7 @@
   position: absolute;
   border-style: solid;
   border-width: 7px 0 7px 20px;
-  border-color: transparent #FF7F50;
+  border-color: transparent #D4DDDE;
   display: block;
   width: 0;
   z-index: 1;

@@ -3,7 +3,6 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 angular.module('starter', ['ionic','btford.socket-io'])
-
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -16,8 +15,9 @@ angular.module('starter', ['ionic','btford.socket-io'])
     }
   });
 })
-
-
+////////////////////////////////////////////////////
+//||||| UI ROUTER - STATES  ||||||||||||||||||||||||
+//||||||||||||||||||||||||||||||||||||||||||||||||\\
 .config(function($stateProvider, $urlRouterProvider){
   $stateProvider
     .state('login', {
@@ -66,9 +66,6 @@ angular.module('starter', ['ionic','btford.socket-io'])
     });
   }
 })
-
-
-
 //|||||||||||||||||||||||||||||||||||||||||||||||
 //||||| LOGIN CONTROLLER|||||||||||||||||||||||||
 //|||||||||||||||||||||||||||||||||||||||||||||||
@@ -87,19 +84,25 @@ angular.module('starter', ['ionic','btford.socket-io'])
 //|||||||||||||||||||||||||||||||||||||
 //||||| CHAT CONTROLLER|||||||||||||||||||||||||
 //|||||||||||||||||||||||||||||||||||||4. inject stateParams// inject mySocket dependency
-.controller('ChatController', function($scope, $stateParams, Socket){
+.controller('ChatController', function($scope, $stateParams, Socket, $ionicScrollDelegate){
   $scope.messages = [];//messages array
   $scope.nickname = $stateParams.nickname;
-  //b. data to sender             //ad key: and we can juse scope.nickname 
+//
+var colors = ['#6CDE4D', '#CE9026', '#CE30E7', '#5E9FFE', '#38D4C8', '#D43FBF'];
+
+
+
+  //b. data to sender            
       //we are sending JSON obj data w/2 keys (who send it and what the msg is! )
-  // var data = {message: "User has joined", sender: $scope.nickname};
   Socket.on("connect", function() {
       $scope.socketId = this.id;
           var data = {
+            // var data = {message: "User has joined", sender: $scope.nickname};
                       message: $scope.nickname + " has joined!", 
-                      sender: $scope.nickname, 
+                      sender: $scope.nickname,  //ad key: and we can use scope.nickname 
                       socketId: $scope.socketId, 
-                      isLog: true
+                      isLog: true,
+                      color: $scope.getUsernameColor($scope.nickname)
 
                        };     
 
@@ -112,9 +115,10 @@ angular.module('starter', ['ionic','btford.socket-io'])
     Socket.on("Message", function(data){
       //
       $scope.messages.push(data);
+      //
+      $ionicScrollDelegate.$getByHandle('mainScroll').scrollBottom(true);
       // console.log(data.message);
     })
-
   //2.passed from our loginController
   //scope variable obj name and value 
   // $scope.nickname = $stateParams.nickname;
@@ -122,8 +126,11 @@ angular.module('starter', ['ionic','btford.socket-io'])
   ///CREATING sendMessage button method/function
   //|||||||||||||||||||||||||||||||||||||||||||||||
     $scope.sendMessage = function() {
+      //don't send empty messages.
+      if($scope.message.length == 0)
+        return;
     //message we will send = message info the sender and the text(body)  
-      var newMessage = {sender:'', message:'', socketId:'', isLog:false};//ID being sent w/msg
+      var newMessage = {sender:'', message:'', socketId:'', isLog:false, color: '' };//ID being sent w/msg
 
     //populare fields of the variable//user name (value for our sender field)
       newMessage.sender = $scope.nickname
@@ -133,11 +140,28 @@ angular.module('starter', ['ionic','btford.socket-io'])
       newMessage.socketId = $scope.socketId;
   //    
       newMessage.isLog = false;
+      newMessage.color = $scope.getUsernameColor($scope.nickname);
 
  //make call to a socket emit method - emit event, Message .send newMessage object. 
       Socket.emit("Message", newMessage); 
 
       $scope.message = '';    
+    }
+
+    // user colors function
+    $scope.getUsernameColor = function(username){
+      var hash = 7; 
+
+      //
+      for(var i=0; i<username.length;i++)
+      {
+        hash = username.charCodeAt(i)+ (hash<<5) - hash;
+
+      }
+                                //never exceed the length of colors []//
+      var index = Math.abs(hash % colors.length)
+      //
+      return colors[index];
     }
 
 })
