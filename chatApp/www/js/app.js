@@ -84,7 +84,8 @@ angular.module('starter', ['ionic','btford.socket-io', 'ngSanitize', 'ngCordova'
 //|||||||||||||||||||||||||||||||||||||
 //||||| CHAT CONTROLLER|||||||||||||||||||||||||
 //|||||||||||||||||||||||||||||||||||||4. inject stateParams// inject mySocket dependency
-.controller('ChatController', function($scope, $stateParams, Socket, $ionicScrollDelegate, $sce, $cordovaMedia){
+.controller('ChatController', function($scope, $timeout, $stateParams, Socket, $ionicScrollDelegate, $sce, $cordovaMedia){
+  $scope.status_message = "Welcome to Abel's Chat!"
   $scope.messages = [];//messages array
   $scope.nickname = $stateParams.nickname;
 //
@@ -128,8 +129,36 @@ var colors = ['#6CDE4D', '#CE9026', '#CE30E7', '#5E9FFE', '#38D4C8', '#D43FBF'];
       // console.log(data.message);
     })
 
-    //sound function and url "src" is the parameter
+    var typing = false;
+    var TYPING_TIMER_LENGTH = 2000;
 
+    $scope.updateTyping = function(){
+      if(!typing){
+        typing = true;
+        Socket.emit("typing", {socketId: $scope.socketId, sender: $scope.nickname});
+      }
+
+      lastTypingTime = (new Date()).getTime();
+
+      $timeout(function(){
+        var timeDiff = (new Date()).getTime() - lastTypingTime;
+
+        if(timeDiff >= TYPING_TIMER_LENGTH && typing){
+          Socket.emit('stop typing', {socketId: $scope.socketId, sender: $scope.nickname});
+          typing = false;
+        }
+      }, TYPING_TIMER_LENGTH)
+    }
+
+    Socket.on('stop typing', function(data){
+      $scope.status_message = "Welcome to Abel's chat app";
+    })
+
+    Socket.on('typing', function(data){
+      $scope.status_message = data.sender + " is typing...";
+    })
+
+    //sound function and url "src" is the parameter
     var playAudio = function(src)
     {
       if(ionic.Platform.isAndroid() || ionic.Platform.isIOS())

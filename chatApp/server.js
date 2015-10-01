@@ -25,6 +25,14 @@ var express = require('express'),
         //io.emit sends a msg to ALL the users
       });
 
+       socket.on('typing', function(data){
+        io.emit('typing', data);
+    });
+    
+    socket.on('stop typing', function(data){
+        io.emit('stop typing', data);
+    });
+
     })
 
 

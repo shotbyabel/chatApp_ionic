@@ -89,3 +89,29 @@
 .noBg {
   background-color: transparent !important;
 }
+
+#chat_bg {
+  background-image: url('../img/chatBG.png');
+  background-size: 100% auto;
+   background-repeat: no-repeat;
+  background-position: 50% 0;
+/*  background-position: center center;  */
+
+}
+
+.item{
+  background-color: transparent !important;
+  border: none !important;
+  padding-top: 3px !important;
+  padding-bottom: 3px !important;
+
+}
+
+#login_bg {
+  background-image: url('../img/login.png');
+  background-size: 100%;
+   background-repeat: no-repeat;
+  background-position: 50% 0;
+/*  background-position: center center;  */
+
+}
