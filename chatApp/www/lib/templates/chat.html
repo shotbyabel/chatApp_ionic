@@ -24,7 +24,8 @@
           (socketId == msg.socketId) && !msg.isLog , 'bubbleLeft': 
             (socketId != msg.socketId) && !msg.isLog}">
 <!-- colors assigned from  COLORS array and the getUsernameColor function-->
-        <h2 ng-hide="msg.isLog"><b style="color: {{msg.color}}">{{msg.sender}}:</b></h2> 
+        <h2 ng-hide="msg.isLog"><b style="color: {{msg.color}}">{{msg.sender}}:</b></h2>
+<!--         lec26 ng-bind look at app.js under  data.message = $sce.trustAsHtml(data.message);  -->
           <p ng-hide="msg.isLog" ng-bind-html="msg.message"></p>
           <center><p style="color: {{msg.color}}" ng-show="msg.isLog">{{msg.message}}</p></center>
         </div>
