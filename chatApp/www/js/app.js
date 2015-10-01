@@ -35,7 +35,7 @@ angular.module('starter', ['ionic','btford.socket-io'])
 })
 //|||||||||||||||||||||||||||||||||||
 //|||||| SOCKET iO FACTORY  /service| 
-//|||||||||||||||||||||||||||||||||||
+//|for connecting and sending msgs to the server|
 .factory('Socket', function (socketFactory) {
   var myIoSocket = io.connect('http://localhost:3000');
 
@@ -45,6 +45,30 @@ angular.module('starter', ['ionic','btford.socket-io'])
 
   return Socket;
 })
+//||||||||||||||||||||||||||||||||||||||||||||||
+//||      DIRECTIVE ng-enter || 
+//||||||||||||||||||||||||||||||||||||||||||||||
+.directive('ngEnter', function() {//html ng-enter tag
+  //takes 3 params:keypress event, check that keypress has keycode of 13(enter)
+  return function(scope, element, attrs) {
+    element.bind("keywoard keypress", function(event) {
+      if(event.which === 13) //enter
+      {
+     //ONLY if enter is press run code:  run the apply function 
+        scope.$apply(function()
+        {
+          //evaluate the attrinute which is myFunction
+          scope.$eval(attrs.ngEnter);
+
+        });
+        event.preventDefault();
+      }
+    });
+  }
+})
+
+
+
 //|||||||||||||||||||||||||||||||||||||||||||||||
 //||||| LOGIN CONTROLLER|||||||||||||||||||||||||
 //|||||||||||||||||||||||||||||||||||||||||||||||
@@ -60,19 +84,30 @@ angular.module('starter', ['ionic','btford.socket-io'])
   }
  } 
 })
-//||||||||||||||||||||||||||||||||||||||||||||||
+//|||||||||||||||||||||||||||||||||||||
 //||||| CHAT CONTROLLER|||||||||||||||||||||||||
 //|||||||||||||||||||||||||||||||||||||4. inject stateParams// inject mySocket dependency
 .controller('ChatController', function($scope, $stateParams, Socket){
-  $scope.messages = [];
-  $scope.nickname = $stateParams.nickname;  
+  $scope.messages = [];//messages array
+  $scope.nickname = $stateParams.nickname;
   //b. data to sender             //ad key: and we can juse scope.nickname 
       //we are sending JSON obj data w/2 keys (who send it and what the msg is! )
-  var data = {message: "User has joined", sender: $scope.nickname};
+  // var data = {message: "User has joined", sender: $scope.nickname};
   Socket.on("connect", function() {
+      $scope.socketId = this.id;
+          var data = {
+                      message: $scope.nickname + " has joined!", 
+                      sender: $scope.nickname, 
+                      socketId: $scope.socketId, 
+                      isLog: true
+
+                       };     
+
       //a. send events to server
       Socket.emit("Message", data);
-  })
+//UNIQUE IDs//create scope var socketId and send along with message Line 100
+      // $scope.socketId = this.id;
+  });
     //f. tell socket clien to listen for server!
     Socket.on("Message", function(data){
       //
@@ -83,6 +118,27 @@ angular.module('starter', ['ionic','btford.socket-io'])
   //2.passed from our loginController
   //scope variable obj name and value 
   // $scope.nickname = $stateParams.nickname;
+  /////////////////////////////////////////////
+  ///CREATING sendMessage button method/function
+  //|||||||||||||||||||||||||||||||||||||||||||||||
+    $scope.sendMessage = function() {
+    //message we will send = message info the sender and the text(body)  
+      var newMessage = {sender:'', message:'', socketId:'', isLog:false};//ID being sent w/msg
+
+    //populare fields of the variable//user name (value for our sender field)
+      newMessage.sender = $scope.nickname
+//the actual message// give us access to value of input text box ng-model message in chat.html
+      newMessage.message = $scope.message
+//sending  ID with msg, check if msg is the same as the socketId from scope/item-avatar-right       
+      newMessage.socketId = $scope.socketId;
+  //    
+      newMessage.isLog = false;
+
+ //make call to a socket emit method - emit event, Message .send newMessage object. 
+      Socket.emit("Message", newMessage); 
+
+      $scope.message = '';    
+    }
 
 })
 

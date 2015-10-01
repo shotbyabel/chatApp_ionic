@@ -7,7 +7,7 @@ var express = require('express'),
 
 //listening to events with '.on' method
     io.on("connection", function(socket) {
-      console.log("A client has connected");
+      console.log("A client has connected the id " + socket.id + "!");
 
       socket.on("disconnect", function() {
         console.log("the client has disconnected");
