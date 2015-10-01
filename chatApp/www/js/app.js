@@ -2,7 +2,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('starter', ['ionic','btford.socket-io', 'ngSanitize' 'ngCordova'])
+angular.module('starter', ['ionic','btford.socket-io', 'ngSanitize', 'ngCordova'])
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -118,16 +118,38 @@ var colors = ['#6CDE4D', '#CE9026', '#CE30E7', '#5E9FFE', '#38D4C8', '#D43FBF'];
       data.message = $sce.trustAsHtml(data.message);
       //
       $scope.messages.push(data);
+
+      if($scope.socketId == data.socketId)
+        playAudio("audio/outgoing.mp3");
+      else
+        playAudio("audio/incoming.mp3");
       //
       $ionicScrollDelegate.$getByHandle('mainScroll').scrollBottom(true);
       // console.log(data.message);
     })
 
     //sound function and url "src" is the parameter
-    var playAudio = function(src) {
 
+    var playAudio = function(src)
+    {
+      if(ionic.Platform.isAndroid() || ionic.Platform.isIOS())
+      {
+        var newUrl = '';
+        if(ionic.Platform.isAndroid()){
+          newUrl = "/android_asset/www/audio/incoming.mp3" + src;
+        }
+        else
+          newUrl = src;
 
+        var media = new Media(newUrl, null, null, null);
+        media.play();
+      }
+      else
+      {
+        new Audio(src).play();
+      }
     }
+
   //2.passed from our loginController
   //scope variable obj name and value 
   // $scope.nickname = $stateParams.nickname;
