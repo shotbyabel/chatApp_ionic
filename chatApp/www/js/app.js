@@ -83,7 +83,7 @@ angular.module('starter', ['ionic','btford.socket-io', 'ngSanitize', 'ngCordova'
 })
 //|||||||||||||||||||||||||||||||||||||
 //||||| CHAT CONTROLLER|||||||||||||||||||||||||
-//|||||||||||||||||||||||||||||||||||||4. inject stateParams// inject mySocket dependency
+//||||| ||||||||||||||||||||||||||||||||4. inject stateParams// inject mySocket dependency
 .controller('ChatController', function($scope, $timeout, $stateParams, Socket, $ionicScrollDelegate, $sce, $cordovaMedia){
   $scope.status_message = "Welcome to Abel's Chat!"
   $scope.messages = [];//messages array
